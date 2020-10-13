@@ -1,26 +1,52 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import data from "./riskAssessment";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+export type Assessment = {
+	name: string;
+	riskLevel: string;
+};
 
+const App = () => {
+	const [assessments, setAssessments] = useState(data);
+	const [editMode, setEditMode] = useState(false);
+
+	const toggleEditMode = () => {
+		setEditMode(!editMode);
+	};
+
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+	};
+
+	return (
+		<div style={{ display: "flex", flexDirection: "column" }} className="App">
+			<form onSubmit={handleSubmit}>
+				{editMode ? (
+					<button type="submit">{"Save"}</button>
+				) : (
+					<button onClick={toggleEditMode}>{editMode ? "Save" : "Edit"}</button>
+				)}
+
+				{assessments.map((assessment, assessmentIndex) => {
+					return (
+						<div style={{ display: "flex" }} key={assessmentIndex}>
+							<div style={{ display: "flex", flex: 1 }}>{assessment.name}</div>
+							{editMode ? (
+								<input
+									name={`riskLevel${assessmentIndex}`}
+									value={assessment.riskLevel}
+								/>
+							) : (
+								<div style={{ display: "flex", flex: 1 }}>
+									<div>{assessment.riskLevel}</div>
+								</div>
+							)}
+						</div>
+					);
+				})}
+			</form>
+		</div>
+	);
+};
 export default App;
